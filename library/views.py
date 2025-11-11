@@ -1,3 +1,4 @@
+from datetime import timedelta
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from .models import Author, Book, Member, Loan
@@ -52,3 +53,12 @@ class MemberViewSet(viewsets.ModelViewSet):
 class LoanViewSet(viewsets.ModelViewSet):
     queryset = Loan.objects.all()
     serializer_class = LoanSerializer
+
+    @action(detail=True, methods=['post'])
+    def extend_due_date(self, request, pk=None):
+        loan = self.get_object()
+        if loan.due_date > timezone.now.date() and request.date.get('additional_days') > 0:
+            loan.due_date = loan.due_date + timedelta(request.date.get('additional_days'))
+            loan.save()
+        return Response({'success': LoanSerializer(loan)})
+

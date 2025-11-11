@@ -4,7 +4,7 @@ from .models import Author, Book, Member, Loan
 from .serializers import AuthorSerializer, BookSerializer, MemberSerializer, LoanSerializer
 from rest_framework.decorators import action
 from django.utils import timezone
-from .tasks import send_loan_notification
+from .tasks import send_loan_notification, check_overdue_loans
 
 class AuthorViewSet(viewsets.ModelViewSet):
     queryset = Author.objects.all()
